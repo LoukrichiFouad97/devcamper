@@ -1,0 +1,10 @@
+{
+	"env": "prod",
+	"port": 5050,
+	"db": {
+		"url": "mongodb://devcamper/devcamper_prod"
+	},
+	"jwt": {
+		"expire": "1d"
+	}
+}

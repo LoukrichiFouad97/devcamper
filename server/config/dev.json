@@ -1,0 +1,10 @@
+{
+	"env": "dev",
+	"port": 8080,
+	"db": {
+		"url": "mongodb://localhost/devcamper"
+	},
+	"jwt": {
+		"expire": "30d"
+	}
+}

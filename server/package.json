@@ -1,0 +1,33 @@
+{
+	"name": "devcamper",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"start": "NODE_ENV=prod node -r esm app.js",
+		"dev": "nodemon -r esm app.js",
+		"test": "jest --watchAll --verbose --runInBand"
+	},
+	"keywords": [],
+	"author": "fouad loukrichi",
+	"license": "ISC",
+	"dependencies": {
+		"body-parser": "^1.19.0",
+		"convict": "^6.0.0",
+		"dotenv": "^8.2.0",
+		"esm": "^3.2.25",
+		"express": "^4.17.1",
+		"mongoose": "^5.10.7",
+		"nodemon": "^2.0.4",
+		"prettier": "^2.1.2"
+	},
+	"devDependencies": {
+		"@babel/core": "^7.11.6",
+		"eslint": "^7.2.0",
+		"eslint-config-airbnb": "^18.2.0",
+		"eslint-plugin-import": "^2.22.0",
+		"eslint-plugin-jsx-a11y": "^6.3.1",
+		"eslint-plugin-react": "^7.21.2",
+		"eslint-plugin-react-hooks": "^4.0.0"
+	}
+}
