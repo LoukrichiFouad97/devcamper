@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { config } from "../config/config";
 
-export const mongooseLoader = async () => {
+export default () => {
 	const db = config.db.url;
 	try {
 		mongoose.connect(db, {
