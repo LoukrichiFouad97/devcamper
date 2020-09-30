@@ -1,9 +1,15 @@
-import * as routes from "../routes";
+import { routes } from "../routes";
 
 export default (app) => {
-	app.use("/api/bootcamps", routes.bootcampRoute);
-	app.use("/api/courses", routes.coursesRoute);
-	app.use("/api/reviews", routes.reviewsRoute);
-	app.use("/api/users", routes.usersRoute);
-	app.use("/api/auth", routes.authRoute);
+	app.use("/api/v1/bootcamps", routes.bootcampsRoute());
+	app.use("/api/v1/courses", routes.coursesRoute);
+	app.use("/api/v1/reviews", routes.reviewsRoute);
+	app.use("/api/v1/users", routes.usersRoute);
+	app.use("/api/v1/auth", routes.authRoute);
+	app.all("*", (err, req, res, next) => {
+		res.status(404).json({
+			status: "fail",
+			message: `Can't find ${req.originalUrl} on this server!`,
+		});
+	});
 };

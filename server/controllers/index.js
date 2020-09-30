@@ -1,3 +1,6 @@
-import { userController } from "./user.controller";
+import { bootcampController } from "./bootcamp_controller";
 
-export { userController };
+export const controllers = {
+	bootcampController,
+};
+
