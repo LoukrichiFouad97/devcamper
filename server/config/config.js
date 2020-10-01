@@ -22,13 +22,13 @@ const _config = convict({
 	},
 	jwt: {
 		secret: {
-			doc: "jwt secret",
+			doc: "json web token secret",
 			format: String,
 			default: null,
 			env: "DEVCAMPER_JWT",
 		},
 		expire: {
-			doc: "jwt expire time",
+			doc: "json web token expire time",
 			format: String,
 			default: "30d",
 		},

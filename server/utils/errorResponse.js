@@ -4,4 +4,3 @@ export class ErrorResponse extends Error {
 		this.statusCode = statusCode;
 	}
 }
-
