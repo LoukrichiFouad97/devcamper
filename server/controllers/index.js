@@ -1,4 +1,4 @@
-import { bootcampController } from "./bootcamp_controller";
+import { bootcampController } from "./bootcamp.controller";
 
 export const controllers = {
 	bootcampController,

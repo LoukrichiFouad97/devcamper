@@ -16,7 +16,12 @@ loaders(app);
 app.use(middlewares.errorHandler);
 
 if (config.env === "dev") {
-	app.use(morgan("combined"));
+	app.use(morgan("dev"));
+}
+
+if (!process.env.JWT_SECRET) {
+	console.log();
+	process.exit(1);
 }
 
 const PORT = config.port || 8080;
