@@ -1,10 +1,13 @@
 import express from "express";
 
 import { controllers } from "../controllers";
+import { courseRoute } from "./courses.route";
 
 export const bootcampsRoute = function () {
 	const apiRoute = express.Router();
 	const controller = controllers.bootcampController();
+
+	apiRoute.use("/:bootcampid/courses", courseRoute());
 
 	// @desc 		Get a bootcamp within a specific distance
 	// @route		GET /api/v1/bootcamps/radius/:zipcode/:distance
@@ -14,7 +17,8 @@ export const bootcampsRoute = function () {
 		.get(controller.getBootcampInRadius);
 
 	// @desc 		Get all bootcamps and creates a new one
-	// @route		/api/v1/bootcamps
+	// @route		GET /api/v1/bootcamps
+	// @route		POST /api/v1/bootcamps
 	// @access	Public
 	apiRoute
 		.route("/")
@@ -22,7 +26,9 @@ export const bootcampsRoute = function () {
 		.post(controller.createBootcamp);
 
 	// @desc 		Read, Update and Delete bootcamp
-	// @route		/api/v1/bootcamps/:bootcampId
+	// @route		GET /api/v1/bootcamps/:bootcampId
+	// @route		PUT /api/v1/bootcamps/:bootcampId
+	// @route		DELETE /api/v1/bootcamps/:bootcampId
 	// @access	Private
 	apiRoute
 		.route("/:bootcampId")

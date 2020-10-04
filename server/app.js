@@ -19,7 +19,7 @@ if (config.env === "dev") {
 	app.use(morgan("dev"));
 }
 
-if (!process.env.JWT_SECRET) {
+if (!config.jwt.secret) {
 	console.log();
 	process.exit(1);
 }
