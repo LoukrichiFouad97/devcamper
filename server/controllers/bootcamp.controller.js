@@ -1,4 +1,5 @@
 import _ from "lodash";
+import path from "path";
 
 import { ErrorResponse } from "../utils/errorResponse";
 import { Bootcamp } from "../models/Bootcamp.model";
@@ -91,7 +92,7 @@ export const bootcampController = () => {
 			return next(new ErrorResponse(`Please upload valid image`, 400));
 		}
 
-		if (file.size > process.env.max_size) {
+		if (file.size > process.env.MAX_UPLOAD_SIZE) {
 			return next(
 				new ErrorResponse(
 					`Please upload a photo that is less than ${config.photo.max_size} `,
@@ -100,7 +101,17 @@ export const bootcampController = () => {
 			);
 		}
 
-		res.status(200).json({ success: true, file });
+		// Create a custome filename
+		file.name = `photo_${bootcamp._id}${path.parse(file.name).ext}`;
+		file.mv(`${config.photo.path}/${file.name}`, (err) => {
+			if (err) {
+				return next(new ErrorResponse("File upload failed", 500));
+			}
+		});
+
+		await Bootcamp.findByIdAndUpdate(bootcampId, { photo: file.name });
+
+		res.status(200).json({ success: true, data: file.name });
 	});
 	return {
 		createBootcamp,

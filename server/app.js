@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 import colors from "colors";
 import morgan from "morgan";
 import fileUpload from "express-fileupload";
+import path from "path";
+
 import { config } from "./config/config";
 import { loaders } from "./loaders";
 import { middlewares } from "./middlewares";
@@ -11,6 +13,7 @@ dotenv.config();
 const app = express();
 
 app.use(fileUpload());
+app.use(express.static(path.join(__dirname, "public")));
 
 // Loaders
 loaders(app);
