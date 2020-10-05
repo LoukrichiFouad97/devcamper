@@ -6,9 +6,7 @@ import { Bootcamp } from "../models/Bootcamp.model";
 export const coursesController = () => {
 	const asyncHandler = middlewares.asyncHandler;
 
-	/**
-	 * @desc 	get all the courses in database
-	 */
+	// @desc 	get all the courses in database
 	const getCourses = asyncHandler(async (req, res) => {
 		let query;
 
@@ -30,9 +28,7 @@ export const coursesController = () => {
 		});
 	});
 
-	/**
-	 * @desc 	get a specific course from databas using its ID
-	 */
+	// @desc 	get a specific course from databas using its ID
 	const getCourse = asyncHandler(async (req, res) => {
 		const course = await Course.findById(req.params.courseid).populate({
 			path: "bootcamp",
@@ -54,9 +50,7 @@ export const coursesController = () => {
 		});
 	});
 
-	/**
-	 * @desc 	create a new bootcamp course
-	 */
+	// @desc 	create a new bootcamp course
 	const createCourse = asyncHandler(async (req, res, next) => {
 		req.body.bootcamp = req.params.bootcampid;
 
@@ -79,9 +73,7 @@ export const coursesController = () => {
 		});
 	});
 
-	/**
-	 * @desc 	update course in database
-	 */
+	// @desc 	update course in database
 	const updateCourse = asyncHandler(async (req, res, next) => {
 		let course = await Course.findById(req.params.courseid);
 		if (!course) {
@@ -101,9 +93,7 @@ export const coursesController = () => {
 		});
 	});
 
-	/**
-	 * @desc 	deletes course from database
-	 */
+	// @desc 	delete course from database
 	const deleteCourse = asyncHandler(async (req, res, next) => {
 		const course = await Course.findById(req.params.courseid);
 		if (!course) {
@@ -115,7 +105,7 @@ export const coursesController = () => {
 			);
 		}
 
-		course = await Course.remove();
+		await Course.remove();
 
 		res.status(200).json({
 			success: true,
