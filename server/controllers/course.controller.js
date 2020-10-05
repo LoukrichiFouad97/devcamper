@@ -8,24 +8,16 @@ export const coursesController = () => {
 
 	// @desc 	get all the courses in database
 	const getCourses = asyncHandler(async (req, res) => {
-		let query;
-
-		// query customization
 		if (req.params.bootcampid) {
-			query = Course.find({ bootcamp: req.params.bootcampid });
-		} else {
-			query = Course.find().populate({
-				path: "bootcamp",
-				select: "name description",
+			const courses = await Course.find({ bootcamp: req.params.bootcampid });
+			res.status(200).json({
+				success: true,
+				count: courses.length,
+				courses,
 			});
+		} else {
+			res.status(200).json(res.advancedResults);
 		}
-
-		const courses = await query;
-		res.status(200).json({
-			success: true,
-			count: courses.length,
-			courses,
-		});
 	});
 
 	// @desc 	get a specific course from databas using its ID

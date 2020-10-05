@@ -2,6 +2,8 @@ import express from "express";
 
 import { controllers } from "../controllers";
 import { courseRoute } from "./courses.route";
+import { middlewares } from "../middlewares";
+import { Bootcamp } from "../models/Bootcamp.model";
 
 export const bootcampsRoute = function () {
 	const apiRoute = express.Router();
@@ -22,7 +24,10 @@ export const bootcampsRoute = function () {
 	// @access	Public
 	apiRoute
 		.route("/")
-		.get(controller.getBootcamps)
+		.get(
+			middlewares.advancedResults(Bootcamp, "course"),
+			controller.getBootcamps
+		)
 		.post(controller.createBootcamp);
 
 	// @desc 		Read, Update and Delete bootcamp
