@@ -4,6 +4,7 @@ import { ErrorResponse } from "../utils/errorResponse";
 import { Bootcamp } from "../models/Bootcamp.model";
 import { middlewares } from "../middlewares";
 import { geoCoder } from "../utils/geoCoder";
+import { config } from "../config/config";
 
 export const bootcampController = () => {
 	const asyncHandler = middlewares.asyncHandler;
@@ -31,7 +32,7 @@ export const bootcampController = () => {
 
 	const updateBootcamp = asyncHandler(async (req, res) => {
 		const bootcamp = await Bootcamp.findByIdAndUpdate(
-			req.params.bootcampId,
+			req.params.bootcampid,
 			req.body,
 			{
 				new: true,
@@ -43,7 +44,7 @@ export const bootcampController = () => {
 	});
 
 	const deleteBootcamp = asyncHandler(async (req, res) => {
-		const bootcamp = await Bootcamp.findById(req.params.bootcampId);
+		const bootcamp = await Bootcamp.findById(req.params.bootcampid);
 		if (!bootcamp) return res.status(400).json({ error: "not found" });
 		bootcamp.remove();
 		res.status(200).json({ success: true, removed: bootcamp });
@@ -73,6 +74,34 @@ export const bootcampController = () => {
 		});
 	});
 
+	const bootcampPhotoUpload = asyncHandler(async (req, res, next) => {
+		const bootcampId = req.params.bootcampid;
+		const bootcamp = await Bootcamp.findById(bootcampId);
+		if (!bootcamp)
+			return next(
+				new ErrorResponse(`Bootcamp not found with id${bootcampId}`, 404)
+			);
+		if (!req.files) {
+			return next(new ErrorResponse(`Please add a photo`, 404));
+		}
+
+		const file = req.files.file;
+
+		if (!file.mimetype.startsWith("image")) {
+			return next(new ErrorResponse(`Please upload valid image`, 400));
+		}
+
+		if (file.size > process.env.max_size) {
+			return next(
+				new ErrorResponse(
+					`Please upload a photo that is less than ${config.photo.max_size} `,
+					400
+				)
+			);
+		}
+
+		res.status(200).json({ success: true, file });
+	});
 	return {
 		createBootcamp,
 		getBootcamps,
@@ -80,5 +109,6 @@ export const bootcampController = () => {
 		getBootcamp,
 		updateBootcamp,
 		getBootcampInRadius,
+		bootcampPhotoUpload,
 	};
 };

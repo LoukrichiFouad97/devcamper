@@ -18,6 +18,11 @@ export const bootcampsRoute = function () {
 		.route("/radius/:zipcode/:distance")
 		.get(controller.getBootcampInRadius);
 
+	// @desc 		Get a bootcamp within a specific distance
+	// @route		GET /api/v1/bootcamps/radius/:zipcode/:distance
+	// access		Private
+	apiRoute.route("/:bootcampid/photo").put(controller.bootcampPhotoUpload);
+
 	// @desc 		Get all bootcamps and creates a new one
 	// @route		GET /api/v1/bootcamps
 	// @route		POST /api/v1/bootcamps

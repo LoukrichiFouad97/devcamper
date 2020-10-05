@@ -33,6 +33,18 @@ const _config = convict({
 			default: "30d",
 		},
 	},
+	photo: {
+		max_size: {
+			doc: "max photo size",
+			format: "*",
+			env: "MAX_UPLOAD_SIZE",
+		},
+		path: {
+			doc: "folder to save uploaded photos",
+			format: "string",
+			env: "FILE_UPLOAD_PATH",
+		},
+	},
 });
 
 const env = _config.get("env");

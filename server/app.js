@@ -1,13 +1,16 @@
 import express from "express";
 import dotenv from "dotenv";
 import colors from "colors";
+import morgan from "morgan";
+import fileUpload from "express-fileupload";
 import { config } from "./config/config";
 import { loaders } from "./loaders";
 import { middlewares } from "./middlewares";
-import morgan from "morgan";
 
 dotenv.config();
 const app = express();
+
+app.use(fileUpload());
 
 // Loaders
 loaders(app);
