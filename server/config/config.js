@@ -32,6 +32,12 @@ const _config = convict({
 			format: String,
 			default: "30d",
 		},
+		cookie_expire: {
+			doc: "json web token cookie expire time",
+			format: String,
+			default: 30,
+			env: "JWT_COOKIE_EXPIRE",
+		},
 	},
 	photo: {
 		max_size: {

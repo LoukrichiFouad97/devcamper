@@ -1,4 +1,7 @@
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import { config } from "../config/config";
 
 const UserSchema = new mongoose.Schema(
 	{
@@ -42,5 +45,22 @@ const UserSchema = new mongoose.Schema(
 	},
 	{ timestamps: true }
 );
+
+UserSchema.pre("save", async function (next) {
+	const salt = await bcrypt.genSalt(10);
+	this.password = await bcrypt.hash(this.password, salt);
+	next();
+});
+
+UserSchema.methods = {
+	getToken: function () {
+		return jwt.sign({ id: this._id }, config.jwt.secret, {
+			expiresIn: config.jwt.expire,
+		});
+	},
+	matchPassword: async function (enteredPassword) {
+		return await bcrypt.compare(enteredPassword, this.password);
+	},
+};
 
 export const User = mongoose.model("User", UserSchema);
