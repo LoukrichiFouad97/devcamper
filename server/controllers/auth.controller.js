@@ -54,8 +54,16 @@ export const authController = () => {
 		});
 	};
 
+	const getCurrentUser = asyncHandler(async (req, res, next) => {
+		const user = await User.findById(req.user.id);
+		res.status(200).json({
+			success: true,
+			user,
+		});
+	});
 	return {
 		register,
 		login,
+		getCurrentUser,
 	};
 };

@@ -1,10 +1,12 @@
 import express from "express";
 
 import { controllers } from "../controllers";
+import { middlewares } from "../middlewares";
 
 export const authRoute = function () {
 	const apiRoute = express.Router();
 	const controller = controllers.authController();
+	const requireSignin = middlewares.requireSignin;
 	/**
 	 * @desc 		Creates a new user in database
 	 * @route		POST /api/v1/auth/register
@@ -18,6 +20,13 @@ export const authRoute = function () {
 	 * @access	Public
 	 */
 	apiRoute.post("/login", controller.login);
+
+	/**
+	 * @desc 		Gets the current logged in user
+	 * @route		POST /api/v1/auth/me
+	 * @access	Private
+	 */
+	apiRoute.post("/me", requireSignin, controller.getCurrentUser);
 
 	return apiRoute;
 };

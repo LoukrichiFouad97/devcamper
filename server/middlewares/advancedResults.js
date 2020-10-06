@@ -1,5 +1,3 @@
-import { plugin } from "mongoose";
-
 export const advancedResults = (model, populate) => async (req, res, next) => {
 	let query;
 	const reqQuery = { ...req.query };

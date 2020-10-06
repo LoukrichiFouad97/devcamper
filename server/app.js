@@ -4,6 +4,7 @@ import colors from "colors";
 import morgan from "morgan";
 import fileUpload from "express-fileupload";
 import path from "path";
+import cookieParser from "cookie-parser";
 
 import { config } from "./config/config";
 import { loaders } from "./loaders";
@@ -14,7 +15,7 @@ const app = express();
 
 app.use(fileUpload());
 app.use(express.static(path.join(__dirname, "public")));
-
+app.use(cookieParser());
 // Loaders
 loaders(app);
 
