@@ -1,12 +1,11 @@
 import express from "express";
 
 import { controllers } from "../controllers";
-import { middlewares } from "../middlewares";
+import { requireSignin } from "../middlewares/requireSignin";
 
 export const authRoute = function () {
 	const apiRoute = express.Router();
 	const controller = controllers.authController();
-	const requireSignin = middlewares.requireSignin;
 	/**
 	 * @desc 		Creates a new user in database
 	 * @route		POST /api/v1/auth/register

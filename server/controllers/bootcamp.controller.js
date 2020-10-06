@@ -3,13 +3,11 @@ import path from "path";
 
 import { ErrorResponse } from "../utils/errorResponse";
 import { Bootcamp } from "../models/Bootcamp.model";
-import { middlewares } from "../middlewares";
+import { asyncHandler } from "../middlewares/async";
 import { geoCoder } from "../utils/geoCoder";
 import { config } from "../config/config";
 
 export const bootcampController = () => {
-	const asyncHandler = middlewares.asyncHandler;
-
 	const getBootcamps = asyncHandler(async (req, res) => {
 		res.status(200).json(res.advancedResults);
 	});

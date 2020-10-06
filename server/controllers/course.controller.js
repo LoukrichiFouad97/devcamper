@@ -1,11 +1,9 @@
 import { ErrorResponse } from "../utils/errorResponse";
 import { Course } from "../models/course.model";
-import { middlewares } from "../middlewares";
+import { asyncHandler } from "../middlewares/async";
 import { Bootcamp } from "../models/Bootcamp.model";
 
 export const coursesController = () => {
-	const asyncHandler = middlewares.asyncHandler;
-
 	// @desc 	get all the courses in database
 	const getCourses = asyncHandler(async (req, res) => {
 		if (req.params.bootcampid) {

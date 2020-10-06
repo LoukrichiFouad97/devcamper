@@ -2,9 +2,10 @@ import express from "express";
 
 import { controllers } from "../controllers";
 import { courseRoute } from "./courses.route";
-import { middlewares } from "../middlewares";
-import { Bootcamp } from "../models/Bootcamp.model";
+import { requireSignin } from "../middlewares/requireSignin";
+import { advancedResults } from "../middlewares/advancedResults";
 import { hasAuthorization } from "../middlewares/hasAuthorization";
+import { Bootcamp } from "../models/Bootcamp.model";
 
 export const bootcampsRoute = function () {
 	const apiRoute = express.Router();
@@ -31,8 +32,8 @@ export const bootcampsRoute = function () {
 	apiRoute
 		.route("/")
 		.get(
-			middlewares.requireSignin,
-			middlewares.advancedResults(Bootcamp, "course"),
+			requireSignin,
+			advancedResults(Bootcamp, "course"),
 			controller.getBootcamps
 		)
 		.post(controller.createBootcamp);
@@ -44,11 +45,7 @@ export const bootcampsRoute = function () {
 	// @access	Private
 	apiRoute
 		.route("/:bootcampId")
-		.get(
-			middlewares.requireSignin,
-			hasAuthorization("admin"),
-			controller.getBootcamp
-		)
+		.get(requireSignin, hasAuthorization("admin"), controller.getBootcamp)
 		.put(controller.updateBootcamp)
 		.delete(controller.deleteBootcamp);
 

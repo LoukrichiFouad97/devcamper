@@ -1,10 +1,9 @@
-import { middlewares } from "../middlewares";
+import { asyncHandler } from "../middlewares/async";
 import { ErrorResponse } from "../utils/errorResponse";
 import { User } from "../models/user.model";
 import { config } from "../config/config";
 
 export const authController = () => {
-	const asyncHandler = middlewares.asyncHandler;
 	const register = asyncHandler(async (req, res) => {
 		const user = await User.create(req.body);
 		if (!user) return new ErrorResponse("can't create user", 404);

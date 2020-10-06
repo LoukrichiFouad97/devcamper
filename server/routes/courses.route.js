@@ -1,7 +1,7 @@
 import express from "express";
 
 import { controllers } from "../controllers";
-import { middlewares } from "../middlewares";
+import { advancedResults } from "../middlewares/advancedResults";
 import { Course } from "../models/course.model";
 
 export const courseRoute = function () {
@@ -17,7 +17,7 @@ export const courseRoute = function () {
 	apiRoute
 		.route("/")
 		.get(
-			middlewares.advancedResults(Course, {
+			advancedResults(Course, {
 				path: "bootcamp",
 				select: "name description",
 			}),

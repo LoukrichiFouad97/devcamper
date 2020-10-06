@@ -8,7 +8,7 @@ import cookieParser from "cookie-parser";
 
 import { config } from "./config/config";
 import { loaders } from "./loaders";
-import { middlewares } from "./middlewares";
+import { errorHandler } from "./middlewares/error";
 
 dotenv.config();
 const app = express();
@@ -20,7 +20,7 @@ app.use(cookieParser());
 loaders(app);
 
 // Middlewares
-app.use(middlewares.errorHandler);
+app.use(errorHandler);
 
 if (config.env === "dev") {
 	app.use(morgan("dev"));
