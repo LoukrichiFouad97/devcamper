@@ -2,9 +2,6 @@ import express from "express";
 import dotenv from "dotenv";
 import colors from "colors";
 import morgan from "morgan";
-import fileUpload from "express-fileupload";
-import path from "path";
-import cookieParser from "cookie-parser";
 
 import { config } from "./config/config";
 import { loaders } from "./loaders";
@@ -13,9 +10,6 @@ import { errorHandler } from "./middlewares/error";
 dotenv.config();
 const app = express();
 
-app.use(fileUpload());
-app.use(express.static(path.join(__dirname, "public")));
-app.use(cookieParser());
 // Loaders
 loaders(app);
 

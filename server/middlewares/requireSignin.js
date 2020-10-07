@@ -6,11 +6,13 @@ import { User } from "../models/user.model";
 
 export const requireSignin = asyncHandler(async (req, res, next) => {
 	let token = req.headers.authorization;
-	console.log("token", token);
 	try {
 		if (!token || !token.startsWith("Bearer")) {
 			return next(
-				new ErrorResponse("Not authorized to access this route", 401)
+				new ErrorResponse(
+					"No authorization token was found or invalid token",
+					401
+				)
 			);
 		} else {
 			token = token.split(" ")[1];
@@ -18,7 +20,6 @@ export const requireSignin = asyncHandler(async (req, res, next) => {
 
 		// get token and verify token valid or not
 		const decoded = jwt.verify(token, config.jwt.secret);
-		console.log("decoded", decoded);
 		req.user = await User.findById(decoded.id);
 		next();
 	} catch (error) {

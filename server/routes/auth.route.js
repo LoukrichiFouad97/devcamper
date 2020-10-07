@@ -24,3 +24,10 @@ authRoute.post("/login", authController.login);
  * @access	Private
  */
 authRoute.post("/me", requireSignin, authController.getCurrentUser);
+
+/**
+ * @desc    Logs out users
+ * @route   POST /api/v1/auth/logout
+ * @access  Private
+ */
+authRoute.post("/logout", authController.logOut);

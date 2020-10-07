@@ -57,3 +57,7 @@ export const getCurrentUser = asyncHandler(async (req, res, next) => {
 		user,
 	});
 });
+
+export const logOut = asyncHandler(async (req, res, next) => {
+	res.cookies("token", "");
+});
