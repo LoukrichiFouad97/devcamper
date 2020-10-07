@@ -3,6 +3,8 @@ import express from "express";
 import * as courseController from "../controllers/course.controller";
 import { advancedResults } from "../middlewares/advancedResults";
 import { Course } from "../models/course.model";
+import { requireSignin } from "../middlewares/requireSignin";
+import { hasAuthorization } from "../middlewares/hasAuthorization";
 
 export const courseRoute = express.Router({ mergeParams: true });
 
@@ -21,7 +23,7 @@ courseRoute
 		}),
 		courseController.getCourses
 	)
-	.post(courseController.createCourse);
+	.post(requireSignin, courseController.createCourse);
 
 /**
  * @desc 		Read, Update and Delete course
@@ -33,5 +35,13 @@ courseRoute
 courseRoute
 	.route("/:courseid")
 	.get(courseController.getCourse)
-	.put(courseController.updateCourse)
-	.delete(courseController.deleteCourse);
+	.put(
+		requireSignin,
+		hasAuthorization("admin", "publisher"),
+		courseController.updateCourse
+	)
+	.delete(
+		requireSignin,
+		hasAuthorization("admin", "publisher"),
+		courseController.deleteCourse
+	);

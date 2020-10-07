@@ -41,22 +41,39 @@ export const getBootcamp = asyncHandler(async (req, res, next) => {
 	res.status(200).json({ success: true, data: bootcamp });
 });
 
-export const updateBootcamp = asyncHandler(async (req, res) => {
-	const bootcamp = await Bootcamp.findByIdAndUpdate(
-		req.params.bootcampid,
-		req.body,
-		{
-			new: true,
-			runValidators: true,
-		}
-	);
-	if (!bootcamp) return res.status(400).json({ msg: "bootcamp not found" });
+export const updateBootcamp = asyncHandler(async (req, res, next) => {
+	let bootcamp = await Bootcamp.findById(req.params.bootcampid);
+	if (!bootcamp) return next(new ErrorResponse("bootcamp not found", 404));
+
+	if (bootcamp.user.toString() !== req.user.id || req.user.role !== "admin") {
+		return next(
+			new ErrorResponse(
+				`user with id ${req.user.id} is not authorized to update this bootcamp`,
+				404
+			)
+		);
+	}
+
+	bootcamp = await Bootcamp.findByIdAndUpdate(req.params.bootcampid, req.body, {
+		new: true,
+		runValidators: true,
+	});
 	res.status(200).json({ success: true, updated: bootcamp });
 });
 
 export const deleteBootcamp = asyncHandler(async (req, res) => {
 	const bootcamp = await Bootcamp.findById(req.params.bootcampid);
 	if (!bootcamp) return res.status(400).json({ error: "not found" });
+
+	if (bootcamp.user.toString() !== req.user.id || req.user.role !== "admin") {
+		return next(
+			new ErrorResponse(
+				`user with id ${req.user.id} is not authorized to update this bootcamp`,
+				404
+			)
+		);
+	}
+
 	bootcamp.remove();
 	res.status(200).json({ success: true, removed: bootcamp });
 });
@@ -92,6 +109,15 @@ export const bootcampPhotoUpload = asyncHandler(async (req, res, next) => {
 		return next(
 			new ErrorResponse(`Bootcamp not found with id${bootcampId}`, 404)
 		);
+
+	if (bootcamp.user.toString() !== req.user.id || req.user.role !== "admin") {
+		return next(
+			new ErrorResponse(
+				`user with id ${req.user.id} is not authorized to update this bootcamp`,
+				404
+			)
+		);
+	}
 	if (!req.files) {
 		return next(new ErrorResponse(`Please add a photo`, 404));
 	}

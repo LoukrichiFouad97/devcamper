@@ -45,20 +45,19 @@ bootcampRoute
 		requireSignin,
 		hasAuthorization("admin", "publisher"),
 		advancedResults(Bootcamp, "course"),
-
 		bootcampController.getBootcamps
 	)
 	.post(requireSignin, bootcampController.createBootcamp);
 
 /**
  * @desc 		Read, Update and Delete bootcamp
- * @route		GET /api/v1/bootcamps/:bootcampId
- * @route		PUT /api/v1/bootcamps/:bootcampId
- * @route		DELETE /api/v1/bootcamps/:bootcampId
+ * @route		GET /api/v1/bootcamps/:bootcampid
+ * @route		PUT /api/v1/bootcamps/:bootcampid
+ * @route		DELETE /api/v1/bootcamps/:bootcampid
  * @access	Private
  */
 bootcampRoute
-	.route("/:bootcampId")
+	.route("/:bootcampid")
 	.get(bootcampController.getBootcamp)
 	.put(
 		requireSignin,

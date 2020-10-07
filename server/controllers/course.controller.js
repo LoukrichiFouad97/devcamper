@@ -3,7 +3,7 @@ import { Course } from "../models/course.model";
 import { asyncHandler } from "../middlewares/async";
 import { Bootcamp } from "../models/Bootcamp.model";
 
-// @desc 	get all the courses in database
+/**  @desc 	get all the courses in database */
 export const getCourses = asyncHandler(async (req, res) => {
 	if (req.params.bootcampid) {
 		const courses = await Course.find({ bootcamp: req.params.bootcampid });
@@ -17,7 +17,7 @@ export const getCourses = asyncHandler(async (req, res) => {
 	}
 });
 
-// @desc 	get a specific course from databas using its ID
+/** @desc 	get a specific course from databas using its ID */
 export const getCourse = asyncHandler(async (req, res) => {
 	const course = await Course.findById(req.params.courseid).populate({
 		path: "bootcamp",
@@ -39,9 +39,10 @@ export const getCourse = asyncHandler(async (req, res) => {
 	});
 });
 
-// @desc 	create a new bootcamp course
+/** @desc 	create a new bootcamp course */
 export const createCourse = asyncHandler(async (req, res, next) => {
 	req.body.bootcamp = req.params.bootcampid;
+	req.body.user = req.user.id;
 
 	// find bootcamp by ID
 	const bootcamp = await Bootcamp.findById(req.params.bootcampid);
@@ -49,6 +50,16 @@ export const createCourse = asyncHandler(async (req, res, next) => {
 		return next(
 			new ErrorResponse(
 				`bootcamp not found with this id ${req.params.bootcampid}`,
+				404
+			)
+		);
+	}
+
+	// Check if user is authorized to update the course
+	if (bootcamp.user.toString() !== req.user.id || req.user.role !== "admin") {
+		return next(
+			new ErrorResponse(
+				`user with id ${req.user.id} is not authorized to update this course`,
 				404
 			)
 		);
@@ -62,7 +73,7 @@ export const createCourse = asyncHandler(async (req, res, next) => {
 	});
 });
 
-// @desc 	update course in database
+/** @desc		update course in database */
 export const updateCourse = asyncHandler(async (req, res, next) => {
 	let course = await Course.findById(req.params.courseid);
 	if (!course) {
@@ -74,7 +85,20 @@ export const updateCourse = asyncHandler(async (req, res, next) => {
 		);
 	}
 
-	course = await Course.findByIdAndUpdate(req.params.courseid, req.body);
+	// Check if user is authorized to update the course
+	if (course.user.toString() !== req.user.id || req.user.role !== "admin") {
+		return next(
+			new ErrorResponse(
+				`user with id ${req.user.id} is not authorized to update this course`,
+				404
+			)
+		);
+	}
+
+	course = await Course.findByIdAndUpdate(req.params.courseid, req.body, {
+		new: true,
+		runValidators: true,
+	});
 
 	res.status(200).json({
 		success: true,
@@ -82,13 +106,23 @@ export const updateCourse = asyncHandler(async (req, res, next) => {
 	});
 });
 
-// @desc 	delete course from database
+/** @desc 	delete course from database */
 export const deleteCourse = asyncHandler(async (req, res, next) => {
 	const course = await Course.findById(req.params.courseid);
 	if (!course) {
 		return next(
 			new ErrorResponse(
 				`course not found with this id ${req.params.courseid}`,
+				404
+			)
+		);
+	}
+
+	// Check if user is authorized to update the course
+	if (course.user.toString() !== req.user.id || req.user.role !== "admin") {
+		return next(
+			new ErrorResponse(
+				`user with id ${req.user.id} is not authorized to update this course`,
 				404
 			)
 		);

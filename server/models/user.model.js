@@ -42,6 +42,11 @@ const UserSchema = new mongoose.Schema(
 			type: Boolean,
 			default: false,
 		},
+		user: {
+			type: mongoose.Types.ObjectId,
+			ref: "User",
+			required: [true, "course owner is required"],
+		},
 	},
 	{ timestamps: true }
 );
