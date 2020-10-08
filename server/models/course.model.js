@@ -34,9 +34,9 @@ const CourseSchema = new mongoose.Schema(
 			required: true,
 		},
 		user: {
-			type: mongoose.Schema.ObjectId,
+			type: mongoose.Types.ObjectId,
 			ref: "User",
-			required: true,
+			required: [true, "course owner is required"],
 		},
 	},
 	{ timestamps: true }

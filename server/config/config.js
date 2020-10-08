@@ -53,6 +53,46 @@ const _config = convict({
 			env: "FILE_UPLOAD_PATH",
 		},
 	},
+	email: {
+		from_email: {
+			doc: "the email sender email",
+			format: "*",
+			default: null,
+			env: "FROM_EMAIL",
+		},
+		from_name: {
+			doc: "the email sender name",
+			format: "*",
+			default: null,
+			env: "FROM_NAME",
+		},
+		smtp: {
+			host: {
+				doc: "smtp host",
+				format: "*",
+				default: null,
+				env: "SMTP_HOST",
+			},
+			port: {
+				doc: "smtp port",
+				format: "port",
+				default: null,
+				env: "SMTP_PORT",
+			},
+			email: {
+				doc: "smtp user email",
+				format: "*",
+				default: null,
+				env: "SMTP_EMAIL",
+			},
+			password: {
+				doc: "smtp user password",
+				format: "*",
+				default: null,
+				env: "SMTP_PASSWORD",
+			},
+		},
+	},
 });
 
 const env = _config.get("env");
