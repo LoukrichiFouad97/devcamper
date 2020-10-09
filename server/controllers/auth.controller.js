@@ -124,12 +124,22 @@ export const updateDetails = asyncHandler(async (req, res, next) => {
 		validateBeforeSave: true,
 	});
 
-	if (!user) return next(new ErrorResponse("coud't update the user", 400));
-
 	res.status(200).json({
 		success: true,
 		user,
 	});
+});
+
+export const updatePassword = asyncHandler(async (req, res, next) => {
+	const user = await User.findById(req.user.id).select("+password");
+
+	if (!(await user.matchPassword(req.body.currentPassword)))
+		return next(new ErrorResponse("Invalid password", 401));
+
+	user.password = req.body.newPassword;
+	await user.save();
+
+	sendTokenResponse(user, 200, res);
 });
 
 // Get token from model, creates a cookie and sends a response

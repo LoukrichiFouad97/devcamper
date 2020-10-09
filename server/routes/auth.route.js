@@ -47,8 +47,15 @@ authRoute.post("/forgotpassword", authController.forgotPassoword);
 authRoute.put("/resetpassword/:resettoken", authController.resetToken);
 
 /**
- * @desc    Reset password
+ * @desc    Update user email and name
  * @route   PUT /api/v1/auth/updatedetails
  * @access  Private
  */
 authRoute.put("/updatedetails", requireSignin, authController.updateDetails);
+
+/**
+ * @desc    Update user password
+ * @route   PUT /api/v1/auth/updatepassword
+ * @access  Private
+ */
+authRoute.put("/updatepassword", requireSignin, authController.updatePassword);
