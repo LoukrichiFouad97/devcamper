@@ -42,7 +42,11 @@ export const getCurrentUser = asyncHandler(async (req, res, next) => {
 });
 
 export const logOut = asyncHandler(async (req, res, next) => {
-	res.cookies("token", "");
+	res.cookie("token", "");
+	res.status(200).json({
+		success: true,
+		msg: "Signed Out successfully!",
+	});
 });
 
 export const forgotPassoword = asyncHandler(async (req, res, next) => {
@@ -92,6 +96,7 @@ export const resetToken = asyncHandler(async (req, res, next) => {
 		.update(req.params.resettoken)
 		.digest("hex");
 
+	console.log(resetPasswordToken);
 	const user = await User.findOne({
 		resetPasswordToken,
 		resetPasswordExpire: { $gt: Date.now() },
@@ -103,9 +108,28 @@ export const resetToken = asyncHandler(async (req, res, next) => {
 	user.password = req.body.password;
 	user.resetPasswordToken = undefined;
 	user.resetPasswordExpire = undefined;
-	await user.save();
+	await user.save({ validateBeforeSave: false });
 
 	sendTokenResponse(user, 200, res);
+});
+
+export const updateDetails = asyncHandler(async (req, res, next) => {
+	const fieldsToUpdate = {
+		name: req.body.name,
+		email: req.body.email,
+	};
+
+	const user = await User.findByIdAndUpdate(req.user.id, fieldsToUpdate, {
+		new: true,
+		validateBeforeSave: true,
+	});
+
+	if (!user) return next(new ErrorResponse("coud't update the user", 400));
+
+	res.status(200).json({
+		success: true,
+		user,
+	});
 });
 
 // Get token from model, creates a cookie and sends a response
@@ -118,6 +142,7 @@ const sendTokenResponse = (user, statusCode, res) => {
 		),
 		httpOnly: true,
 	};
+
 	if (config.env === "prod") {
 		options.secure = true;
 	}
