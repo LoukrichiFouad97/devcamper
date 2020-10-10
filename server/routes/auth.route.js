@@ -30,7 +30,7 @@ authRoute.post("/me", requireSignin, authController.getCurrentUser);
  * @route   POST /api/v1/auth/logout
  * @access  Private
  */
-authRoute.post("/logout", authController.logOut);
+authRoute.get("/logout", authController.logOut);
 
 /**
  * @desc    Generates a reset password token

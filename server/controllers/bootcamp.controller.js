@@ -11,7 +11,7 @@ export const getBootcamps = asyncHandler(async (req, res) => {
 	res.status(200).json(res.advancedResults);
 });
 
-export const createBootcamp = asyncHandler(async (req, res) => {
+export const createBootcamp = asyncHandler(async (req, res, next) => {
 	req.body.user = req.user.id;
 	const publishedBootcamps = await Bootcamp.findOne({ user: req.user.id });
 
@@ -30,11 +30,11 @@ export const createBootcamp = asyncHandler(async (req, res) => {
 });
 
 export const getBootcamp = asyncHandler(async (req, res, next) => {
-	const bootcamp = await Bootcamp.findById(req.params.bootcampId);
+	const bootcamp = await Bootcamp.findById(req.params.bootcampid);
 	if (!bootcamp)
 		return next(
 			new ErrorResponse(
-				`Bootcamp not found with id ${req.params.bootcampId}`,
+				`Bootcamp not found with id ${req.params.bootcampid}`,
 				404
 			)
 		);

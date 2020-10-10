@@ -2,6 +2,7 @@ import express from "express";
 
 import * as bootcampController from "../controllers/bootcamp.controller";
 import { courseRoute } from "./courses.route";
+import { reviewRoute } from "./review.route";
 import { requireSignin } from "../middlewares/requireSignin";
 import { advancedResults } from "../middlewares/advancedResults";
 import { hasAuthorization } from "../middlewares/hasAuthorization";
@@ -9,7 +10,9 @@ import { Bootcamp } from "../models/Bootcamp.model";
 
 export const bootcampRoute = express.Router();
 
+// nested routes
 bootcampRoute.use("/:bootcampid/courses", courseRoute);
+bootcampRoute.use("/:bootcampid/reviews", reviewRoute);
 
 /**
  * @desc 		Get a bootcamp within a specific distance

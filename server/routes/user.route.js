@@ -14,7 +14,10 @@ userRoute.use(hasAuthorization("admin"));
 // @route   GET    /api/v1/users
 // @route   POST   /api/v1/users
 // @access  Private/Admin
-userRoute.route("/").get(userController.getUsers).post(userController.createUser);
+userRoute
+	.route("/")
+	.get(userController.getUsers)
+	.post(userController.createUser);
 
 // @desc    Read, Update and Delete Users (Admin)
 // @route   GET    /api/v1/users/:userId
