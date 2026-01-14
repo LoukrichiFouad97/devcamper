@@ -1,0 +1,351 @@
+openapi: 3.0.3
+info:
+  title: DevCamper API
+  version: 1.0.0
+  description: |
+    REST API for bootcamps, courses, reviews, users with JWT/OAuth auth,
+    cache control, and Level 4 RMM hypermedia links.
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Local development
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+          example: Unauthorized
+    Bootcamp:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        averageRating:
+          type: number
+        averageCost:
+          type: number
+        careers:
+          type: array
+          items:
+            type: string
+        housing:
+          type: boolean
+        jobAssistance:
+          type: boolean
+        location:
+          type: object
+        _links:
+          type: object
+    Course:
+      type: object
+      properties:
+        _id: { type: string }
+        title: { type: string }
+        description: { type: string }
+        weeks: { type: string }
+        tuition: { type: number }
+        minimumSkill: { type: string }
+        scholarshipAvailable: { type: boolean }
+        bootcamp: { type: string }
+        _links:
+          type: object
+    Review:
+      type: object
+      properties:
+        _id: { type: string }
+        title: { type: string }
+        text: { type: string }
+        rating: { type: number }
+        bootcamp: { type: string }
+        user: { type: string }
+        _links:
+          type: object
+    User:
+      type: object
+      properties:
+        _id: { type: string }
+        name: { type: string }
+        email: { type: string }
+        role: { type: string }
+    AuthRegister:
+      type: object
+      required: [name, email, password]
+      properties:
+        name: { type: string }
+        email: { type: string }
+        password: { type: string }
+    AuthLogin:
+      type: object
+      required: [email, password]
+      properties:
+        email: { type: string }
+        password: { type: string }
+paths:
+  /auth/register:
+    post:
+      tags: [Auth]
+      summary: Register user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRegister'
+      responses:
+        '201':
+          description: Created with JWT token
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthLogin'
+      responses:
+        '200':
+          description: JWT issued
+  /auth/me:
+    get:
+      tags: [Auth]
+      security:
+        - bearerAuth: []
+      summary: Current profile
+      responses:
+        '200': { description: User profile }
+        '401': { description: Unauthorized }
+  /bootcamps:
+    get:
+      tags: [Bootcamps]
+      summary: List bootcamps
+      parameters:
+        - in: query
+          name: page
+          schema: { type: integer }
+        - in: query
+          name: limit
+          schema: { type: integer }
+        - in: query
+          name: select
+          schema: { type: string }
+      responses:
+        '200':
+          description: Bootcamp list with HATEOAS links
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  count: { type: integer }
+                  pagintaion: { type: object }
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Bootcamp'
+    post:
+      tags: [Bootcamps]
+      summary: Create bootcamp
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Bootcamp'
+      responses:
+        '201': { description: Bootcamp created }
+        '403': { description: Unauthorized }
+  /bootcamps/{bootcampid}:
+    parameters:
+      - in: path
+        name: bootcampid
+        required: true
+        schema: { type: string }
+    get:
+      tags: [Bootcamps]
+      summary: Get bootcamp
+      responses:
+        '200':
+          description: Bootcamp with links
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bootcamp'
+    put:
+      tags: [Bootcamps]
+      summary: Update bootcamp
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Bootcamp'
+      responses:
+        '200': { description: Updated }
+    delete:
+      tags: [Bootcamps]
+      summary: Delete bootcamp
+      security:
+        - bearerAuth: []
+      responses:
+        '200': { description: Deleted }
+  /bootcamps/{bootcampid}/courses:
+    get:
+      tags: [Courses]
+      summary: List courses for bootcamp
+      responses:
+        '200': { description: Courses }
+    post:
+      tags: [Courses]
+      security:
+        - bearerAuth: []
+      summary: Create course
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Course'
+      responses:
+        '201': { description: Course created }
+  /courses:
+    get:
+      tags: [Courses]
+      summary: List courses (all bootcamps)
+      responses:
+        '200': { description: Courses }
+  /courses/{courseid}:
+    parameters:
+      - in: path
+        name: courseid
+        required: true
+        schema: { type: string }
+    get:
+      tags: [Courses]
+      summary: Get course
+      responses:
+        '200': { description: Course }
+    put:
+      tags: [Courses]
+      security:
+        - bearerAuth: []
+      summary: Update course
+      responses:
+        '200': { description: Updated }
+    delete:
+      tags: [Courses]
+      security:
+        - bearerAuth: []
+      summary: Delete course
+      responses:
+        '200': { description: Deleted }
+  /reviews:
+    get:
+      tags: [Reviews]
+      summary: List reviews
+      responses:
+        '200': { description: Reviews }
+  /reviews/{reviewId}:
+    parameters:
+      - in: path
+        name: reviewId
+        required: true
+        schema: { type: string }
+    get:
+      tags: [Reviews]
+      summary: Get review
+      responses:
+        '200': { description: Review }
+  /bootcamps/{bootcampid}/reviews:
+    post:
+      tags: [Reviews]
+      security:
+        - bearerAuth: []
+      summary: Create review for bootcamp
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Review'
+      responses:
+        '201': { description: Created }
+  /users:
+    get:
+      tags: [Users]
+      security:
+        - bearerAuth: []
+      summary: List users (admin)
+      responses:
+        '200': { description: Users }
+    post:
+      tags: [Users]
+      security:
+        - bearerAuth: []
+      summary: Create user (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200': { description: Created }
+  /users/{userId}:
+    parameters:
+      - in: path
+        name: userId
+        required: true
+        schema: { type: string }
+    get:
+      tags: [Users]
+      security:
+        - bearerAuth: []
+      summary: Get user
+      responses:
+        '200': { description: User }
+    put:
+      tags: [Users]
+      security:
+        - bearerAuth: []
+      summary: Update user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200': { description: Updated }
+    delete:
+      tags: [Users]
+      security:
+        - bearerAuth: []
+      summary: Delete user
+      responses:
+        '200': { description: Deleted }

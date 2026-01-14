@@ -1,11 +1,17 @@
 import crypto from "crypto";
 
-import { asyncHandler } from "../middlewares/async";
-import { ErrorResponse } from "../utils/errorResponse";
-import { User } from "../models/user.model";
-import { config } from "../config/config";
-import { sendEmail } from "../utils/sendEmail";
+import { asyncHandler } from "../middlewares/async.js";
+import { ErrorResponse } from "../utils/errorResponse.js";
+import { User } from "../models/user.model.js";
+import { config } from "../config/config.js";
+import { sendEmail } from "../utils/sendEmail.js";
 
+/**
+ * Register a new user and return a JWT.
+ * @async
+ * @param {Object} req
+ * @param {Object} res
+ */
 export const register = asyncHandler(async (req, res) => {
 	const user = await User.create(req.body);
 	if (!user) return new ErrorResponse("can't create user", 404);
@@ -13,6 +19,13 @@ export const register = asyncHandler(async (req, res) => {
 	sendTokenResponse(user, 200, res);
 });
 
+/**
+ * Login with email/password and return a JWT.
+ * @async
+ * @param {Object} req
+ * @param {Object} res
+ * @param {Function} next
+ */
 export const login = asyncHandler(async (req, res, next) => {
 	const { email, password } = req.body;
 
@@ -35,6 +48,12 @@ export const login = asyncHandler(async (req, res, next) => {
 	sendTokenResponse(user, 200, res);
 });
 
+/**
+ * Get the authenticated user profile.
+ * @async
+ * @param {Object} req
+ * @param {Object} res
+ */
 export const getCurrentUser = asyncHandler(async (req, res, next) => {
 	const user = await User.findById(req.user.id);
 	res.status(200).json({
@@ -43,14 +62,31 @@ export const getCurrentUser = asyncHandler(async (req, res, next) => {
 	});
 });
 
+/**
+ * Clear auth cookie and logout.
+ * @async
+ * @param {Object} req
+ * @param {Object} res
+ */
 export const logOut = asyncHandler(async (req, res, next) => {
-	res.cookie("token", "");
+	res.clearCookie("token", {
+		httpOnly: true,
+		sameSite: "lax",
+		secure: config.env === "prod",
+		path: "/",
+	});
 	res.status(200).json({
 		success: true,
 		msg: "Signed Out successfully!",
 	});
 });
 
+/**
+ * Send password reset email with token.
+ * @async
+ * @param {Object} req
+ * @param {Object} res
+ */
 export const forgotPassoword = asyncHandler(async (req, res, next) => {
 	const { email } = req.body;
 	const user = await User.findOne({ email });
@@ -91,6 +127,12 @@ export const forgotPassoword = asyncHandler(async (req, res, next) => {
 	});
 });
 
+/**
+ * Reset password using token from email.
+ * @async
+ * @param {Object} req
+ * @param {Object} res
+ */
 export const resetToken = asyncHandler(async (req, res, next) => {
 	// hash the forgot password token provided in the reset url
 	const resetPasswordToken = crypto
@@ -115,6 +157,12 @@ export const resetToken = asyncHandler(async (req, res, next) => {
 	sendTokenResponse(user, 200, res);
 });
 
+/**
+ * Update authenticated user's name/email.
+ * @async
+ * @param {Object} req
+ * @param {Object} res
+ */
 export const updateDetails = asyncHandler(async (req, res, next) => {
 	const fieldsToUpdate = {
 		name: req.body.name,
@@ -132,6 +180,12 @@ export const updateDetails = asyncHandler(async (req, res, next) => {
 	});
 });
 
+/**
+ * Update authenticated user's password.
+ * @async
+ * @param {Object} req
+ * @param {Object} res
+ */
 export const updatePassword = asyncHandler(async (req, res, next) => {
 	const user = await User.findById(req.user.id).select("+password");
 
@@ -145,6 +199,12 @@ export const updatePassword = asyncHandler(async (req, res, next) => {
 });
 
 // Get token from model, creates a cookie and sends a response
+/**
+ * Create JWT and respond with cookie + body token.
+ * @param {Object} user
+ * @param {number} statusCode
+ * @param {Object} res
+ */
 const sendTokenResponse = (user, statusCode, res) => {
 	const token = user.getToken();
 
@@ -164,3 +224,20 @@ const sendTokenResponse = (user, statusCode, res) => {
 		token,
 	});
 };
+/**
+ * OAuth Google callback – issues JWT for the authenticated user.
+ * @async
+ */
+export const googleCallback = asyncHandler(async (req, res, next) => {
+	const user = req.user;
+	sendTokenResponse(user, 200, res);
+});
+
+/**
+ * OAuth GitHub callback – issues JWT for the authenticated user.
+ * @async
+ */
+export const githubCallback = asyncHandler(async (req, res, next) => {
+	const user = req.user;
+	sendTokenResponse(user, 200, res);
+});

@@ -1,8 +1,8 @@
 import express from "express";
 
-import * as userController from "../controllers/user.controller";
-import { requireSignin } from "../middlewares/requireSignin";
-import { hasAuthorization } from "../middlewares/hasAuthorization";
+import * as userController from "../controllers/user.controller.js";
+import { requireSignin } from "../middlewares/requireSignin.js";
+import { hasAuthorization } from "../middlewares/hasAuthorization.js";
 
 export const userRoute = express.Router();
 

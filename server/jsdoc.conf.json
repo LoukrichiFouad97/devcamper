@@ -1,0 +1,26 @@
+{
+  "source": {
+    "include": [
+      "app.js",
+      "controllers",
+      "routes",
+      "models",
+      "middlewares",
+      "loaders"
+    ],
+    "includePattern": ".+\\.js(doc|x)?$",
+    "excludePattern": "(^|\\/|\\\\)node_modules(\\/|\\\\)"
+  },
+  "plugins": ["plugins/markdown"],
+  "opts": {
+    "destination": "./docs",
+    "encoding": "utf8",
+    "readme": "README.md",
+    "recurse": true,
+    "template": "templates/default"
+  },
+  "templates": {
+    "cleverLinks": false,
+    "monospaceLinks": false
+  }
+}

@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
-import { config } from "../config/config";
+import { config } from "../config/config.js";
 
 export default async () => {
-	const db = config.db.url;
+	const db = process.env.MONGO_URI || config.db.url;
 
 	await mongoose.connect(db, {
 		useNewUrlParser: true,

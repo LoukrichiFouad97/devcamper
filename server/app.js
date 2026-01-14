@@ -1,11 +1,11 @@
 import express from "express";
 import dotenv from "dotenv";
-import colors from "colors";
+import "colors";
 import morgan from "morgan";
 
-import { config } from "./config/config";
-import { loaders } from "./loaders";
-import { errorHandler } from "./middlewares/error";
+import { config } from "./config/config.js";
+import { loaders } from "./loaders/index.js";
+import { errorHandler } from "./middlewares/error.js";
 
 dotenv.config();
 const app = express();
@@ -26,11 +26,16 @@ if (!config.jwt.secret) {
 }
 
 const PORT = config.port || 8080;
-const server = app.listen(PORT, () =>
-	console.log(`Server started at ${PORT}`.yellow.bold)
-);
 
-process.on("unhandledRejection", (err) => {
-	console.log(`Error: ${err}`.red.bold);
-	server.close(() => process.exit(1));
-});
+// Export app for testing; start server only in non-test environments
+let server = null;
+if (config.env !== "test") {
+	server = app.listen(PORT, () => console.log(`Server started at ${PORT}`.yellow.bold));
+
+	process.on("unhandledRejection", (err) => {
+		console.log(`Error: ${err}`.red.bold);
+		server.close(() => process.exit(1));
+	});
+}
+
+export default app;

@@ -1,15 +1,15 @@
 import express from "express";
 
-import * as courseController from "../controllers/course.controller";
-import { advancedResults } from "../middlewares/advancedResults";
-import { Course } from "../models/course.model";
-import { requireSignin } from "../middlewares/requireSignin";
-import { hasAuthorization } from "../middlewares/hasAuthorization";
+import * as courseController from "../controllers/course.controller.js";
+import { advancedResults } from "../middlewares/advancedResults.js";
+import { Course } from "../models/course.model.js";
+import { requireSignin } from "../middlewares/requireSignin.js";
+import { hasAuthorization } from "../middlewares/hasAuthorization.js";
 
 export const courseRoute = express.Router({ mergeParams: true });
 
 /**
- * @desc 		Get all courses and each bootcamp courses
+ * @desc 	Get all courses and each bootcamp courses
  * @route 	GET /api/v1/courses
  * @route 	GET /api/v1/bootcamps/:bootcampid/courses
  * @access	Private
@@ -30,7 +30,7 @@ courseRoute
  * @route		GET /api/v1/courses/:courseid
  * @route		PUT /api/v1/courses/:courseid
  * @route		DELETE /api/v1/courses/:courseid
- * @access	Private
+ * @access		Private
  */
 courseRoute
 	.route("/:courseid")

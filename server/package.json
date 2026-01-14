@@ -2,16 +2,19 @@
 	"name": "devcamper",
 	"version": "1.0.0",
 	"description": "",
+	"type": "module",
 	"main": "index.js",
 	"scripts": {
-		"start": "NODE_ENV=prod node -r esm app.js",
-		"dev": "nodemon -r esm app.js",
-		"test": "jest --watchAll --verbose --runInBand"
+		"start": "NODE_ENV=prod node app.js",
+		"dev": "nodemon app.js",
+		"test": "node run-unit-tests.cjs",
+		"docs": "jsdoc -c jsdoc.conf.json"
 	},
 	"keywords": [],
 	"author": "fouad loukrichi",
 	"license": "ISC",
 	"dependencies": {
+		"axios": "^1.13.2",
 		"bcryptjs": "^2.4.3",
 		"body-parser": "^1.19.0",
 		"colors": "^1.4.0",
@@ -25,26 +28,38 @@
 		"express-fileupload": "^1.2.0",
 		"express-mongo-sanitize": "^2.0.0",
 		"express-rate-limit": "^5.1.3",
+		"express-session": "^1.18.2",
 		"helmet": "^4.1.1",
 		"hpp": "^0.2.3",
 		"jsonwebtoken": "^8.5.1",
+		"js-yaml": "^4.1.0",
 		"lodash": "^4.17.20",
 		"mongoose": "^5.10.7",
 		"node-geocoder": "^3.27.0",
 		"nodemailer": "^6.4.13",
 		"nodemon": "^2.0.4",
+		"passport": "^0.7.0",
+		"passport-github2": "^0.1.12",
+		"passport-google-oauth20": "^2.0.0",
 		"prettier": "^2.1.2",
+		"swagger-ui-express": "^4.6.3",
 		"slugify": "^1.4.5",
 		"xss-clean": "^0.1.1"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.11.6",
+		"@babel/preset-env": "^7.28.5",
+		"babel-jest": "^30.2.0",
 		"eslint": "^7.2.0",
 		"eslint-config-airbnb": "^18.2.0",
 		"eslint-plugin-import": "^2.22.0",
 		"eslint-plugin-jsx-a11y": "^6.3.1",
 		"eslint-plugin-react": "^7.21.2",
 		"eslint-plugin-react-hooks": "^4.0.0",
-		"morgan": "^1.10.0"
+		"jest": "^30.2.0",
+		"jsdoc": "^4.0.5",
+		"mongodb-memory-server": "^11.0.1",
+		"morgan": "^1.10.0",
+		"supertest": "^6.3.3"
 	}
 }

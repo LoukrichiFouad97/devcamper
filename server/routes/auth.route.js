@@ -1,7 +1,8 @@
 import express from "express";
+import passport from "passport";
 
-import * as authController from "../controllers/auth.controller";
-import { requireSignin } from "../middlewares/requireSignin";
+import * as authController from "../controllers/auth.controller.js";
+import { requireSignin } from "../middlewares/requireSignin.js";
 
 export const authRoute = express.Router();
 /**
@@ -23,14 +24,14 @@ authRoute.post("/login", authController.login);
  * @route		POST /api/v1/auth/me
  * @access	Private
  */
-authRoute.post("/me", requireSignin, authController.getCurrentUser);
+authRoute.get("/me", requireSignin, authController.getCurrentUser);
 
 /**
  * @desc    Logs out users
  * @route   POST /api/v1/auth/logout
  * @access  Private
  */
-authRoute.get("/logout", authController.logOut);
+authRoute.post("/logout", authController.logOut);
 
 /**
  * @desc    Generates a reset password token
@@ -59,3 +60,46 @@ authRoute.put("/updatedetails", requireSignin, authController.updateDetails);
  * @access  Private
  */
 authRoute.put("/updatepassword", requireSignin, authController.updatePassword);
+
+/**
+ * @desc    Google OAuth - Initiates Google login
+ * @route   GET /api/v1/auth/google
+ * @access  Public
+ */
+authRoute.get(
+	"/google",
+	passport.authenticate("google", { scope: ["profile", "email"], session: false })
+);
+
+/**
+ * @desc    Google OAuth Callback
+ * @route   GET /api/v1/auth/google/callback
+ * @access  Public
+ */
+authRoute.get(
+	"/google/callback",
+	passport.authenticate("google", { failureRedirect: "/login", session: false }),
+	authController.googleCallback
+);
+
+/**
+ * @desc    GitHub OAuth - Initiates GitHub login
+ * @route   GET /api/v1/auth/github
+ * @access  Public
+ */
+authRoute.get(
+	"/github",
+	passport.authenticate("github", { scope: ["user:email"], session: false })
+);
+
+/**
+ * @desc    GitHub OAuth Callback
+ * @route   GET /api/v1/auth/github/callback
+ * @access  Public
+ */
+authRoute.get(
+	"/github/callback",
+	passport.authenticate("github", { failureRedirect: "/login", session: false }),
+	authController.githubCallback
+);
+

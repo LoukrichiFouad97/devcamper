@@ -1,16 +1,26 @@
 import _ from "lodash";
 import path from "path";
 
-import { ErrorResponse } from "../utils/errorResponse";
-import { Bootcamp } from "../models/Bootcamp.model";
-import { asyncHandler } from "../middlewares/async";
-import { geoCoder } from "../utils/geoCoder";
-import { config } from "../config/config";
+import { ErrorResponse } from "../utils/errorResponse.js";
+import { Bootcamp } from "../models/Bootcamp.model.js";
+import { asyncHandler } from "../middlewares/async.js";
+import { geoCoder } from "../utils/geoCoder.js";
+import { config } from "../config/config.js";
 
+/**
+ * @desc    Get all bootcamps (supports filters via advancedResults)
+ * @route   GET /api/v1/bootcamps
+ * @access  Private (publisher/admin)
+ */
 export const getBootcamps = asyncHandler(async (req, res) => {
 	res.status(200).json(res.advancedResults);
 });
 
+/**
+ * @desc    Create new bootcamp for current user
+ * @route   POST /api/v1/bootcamps
+ * @access  Private
+ */
 export const createBootcamp = asyncHandler(async (req, res, next) => {
 	req.body.user = req.user.id;
 	const publishedBootcamps = await Bootcamp.findOne({ user: req.user.id });
@@ -29,6 +39,11 @@ export const createBootcamp = asyncHandler(async (req, res, next) => {
 	res.status(201).json({ success: true, data: bootcamp });
 });
 
+/**
+ * @desc    Get single bootcamp by id
+ * @route   GET /api/v1/bootcamps/:bootcampid
+ * @access  Public
+ */
 export const getBootcamp = asyncHandler(async (req, res, next) => {
 	const bootcamp = await Bootcamp.findById(req.params.bootcampid);
 	if (!bootcamp)
@@ -41,11 +56,16 @@ export const getBootcamp = asyncHandler(async (req, res, next) => {
 	res.status(200).json({ success: true, data: bootcamp });
 });
 
+/**
+ * @desc    Update bootcamp (owner or admin)
+ * @route   PUT /api/v1/bootcamps/:bootcampid
+ * @access  Private (publisher/admin)
+ */
 export const updateBootcamp = asyncHandler(async (req, res, next) => {
 	let bootcamp = await Bootcamp.findById(req.params.bootcampid);
 	if (!bootcamp) return next(new ErrorResponse("bootcamp not found", 404));
 
-	if (bootcamp.user.toString() !== req.user.id || req.user.role !== "admin") {
+	if (bootcamp.user.toString() !== req.user.id && req.user.role !== "admin") {
 		return next(
 			new ErrorResponse(
 				`user with id ${req.user.id} is not authorized to update this bootcamp`,
@@ -61,11 +81,16 @@ export const updateBootcamp = asyncHandler(async (req, res, next) => {
 	res.status(200).json({ success: true, updated: bootcamp });
 });
 
+/**
+ * @desc    Delete bootcamp
+ * @route   DELETE /api/v1/bootcamps/:bootcampid
+ * @access  Private (publisher/admin)
+ */
 export const deleteBootcamp = asyncHandler(async (req, res) => {
 	const bootcamp = await Bootcamp.findById(req.params.bootcampid);
 	if (!bootcamp) return res.status(400).json({ error: "not found" });
 
-	if (bootcamp.user.toString() !== req.user.id || req.user.role !== "admin") {
+	if (bootcamp.user.toString() !== req.user.id && req.user.role !== "admin") {
 		return next(
 			new ErrorResponse(
 				`user with id ${req.user.id} is not authorized to update this bootcamp`,
@@ -78,6 +103,11 @@ export const deleteBootcamp = asyncHandler(async (req, res) => {
 	res.status(200).json({ success: true, removed: bootcamp });
 });
 
+/**
+ * @desc    Get bootcamps within distance of a zipcode
+ * @route   GET /api/v1/bootcamps/radius/:zipcode/:distance
+ * @access  Private
+ */
 export const getBootcampInRadius = asyncHandler(async (req, res) => {
 	const { zipcode, distance } = req.params;
 
@@ -102,6 +132,11 @@ export const getBootcampInRadius = asyncHandler(async (req, res) => {
 	});
 });
 
+/**
+ * @desc    Upload bootcamp photo
+ * @route   PUT /api/v1/bootcamps/:bootcampid/photo
+ * @access  Private (publisher/admin)
+ */
 export const bootcampPhotoUpload = asyncHandler(async (req, res, next) => {
 	const bootcampId = req.params.bootcampid;
 	const bootcamp = await Bootcamp.findById(bootcampId);

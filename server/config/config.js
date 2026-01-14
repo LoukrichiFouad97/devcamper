@@ -1,5 +1,7 @@
 import convict from "convict";
-require("dotenv").config();
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const _config = convict({
 	env: {
@@ -35,7 +37,7 @@ const _config = convict({
 		cookie_expire: {
 			doc: "json web token cookie expire time",
 			format: String,
-			default: 30,
+			default: "30",
 			env: "JWT_COOKIE_EXPIRE",
 		},
 	},

@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
-import { config } from "../config/config";
+import { config } from "../config/config.js";
 
 const UserSchema = new mongoose.Schema(
 	{
@@ -21,7 +21,7 @@ const UserSchema = new mongoose.Schema(
 		},
 		role: {
 			type: String,
-			enum: ["user", "publisher"],
+			enum: ["user", "publisher", "admin"],
 			default: "user",
 		},
 		password: {
@@ -43,6 +43,16 @@ const UserSchema = new mongoose.Schema(
 			type: Boolean,
 			default: false,
 		},
+		provider: {
+			type: String,
+			enum: ["local", "google", "github"],
+			default: "local",
+		},
+		providerId: {
+			type: String,
+			sparse: true,
+		},
+		profilePhoto: String,
 	},
 	{ timestamps: true }
 );

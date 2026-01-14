@@ -1,3 +1,8 @@
+/**
+ * @desc    Generic filtering/sorting/pagination middleware with optional populate
+ * @param   {Object} model - Mongoose model to query
+ * @param   {Object|String} [populate] - Populate configuration
+ */
 export const advancedResults = (model, populate) => async (req, res, next) => {
 	let query;
 	const reqQuery = { ...req.query };
@@ -33,9 +38,13 @@ export const advancedResults = (model, populate) => async (req, res, next) => {
 	const limit = Number(req.query.limit) || 10;
 	const startIndex = (page - 1) * limit;
 	const endIndex = page * limit;
-	const total = await model.countDocuments(); // calculates the total documents in the model
+	const total = await model.countDocuments(JSON.parse(queryStr));
 
 	query = query.skip(startIndex).limit(limit);
+
+	if (populate) {
+		query = query.populate(populate);
+	}
 
 	const models = await query;
 
@@ -54,10 +63,6 @@ export const advancedResults = (model, populate) => async (req, res, next) => {
 			page: page + 1,
 			limit,
 		};
-	}
-
-	if (populate) {
-		query = query.populate(populate);
 	}
 
 	res.advancedResults = {

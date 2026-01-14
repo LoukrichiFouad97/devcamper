@@ -1,12 +1,12 @@
 import express from "express";
 
-import * as bootcampController from "../controllers/bootcamp.controller";
-import { courseRoute } from "./courses.route";
-import { reviewRoute } from "./review.route";
-import { requireSignin } from "../middlewares/requireSignin";
-import { advancedResults } from "../middlewares/advancedResults";
-import { hasAuthorization } from "../middlewares/hasAuthorization";
-import { Bootcamp } from "../models/Bootcamp.model";
+import * as bootcampController from "../controllers/bootcamp.controller.js";
+import { courseRoute } from "./courses.route.js";
+import { reviewRoute } from "./review.route.js";
+import { requireSignin } from "../middlewares/requireSignin.js";
+import { advancedResults } from "../middlewares/advancedResults.js";
+import { hasAuthorization } from "../middlewares/hasAuthorization.js";
+import { Bootcamp } from "../models/Bootcamp.model.js";
 
 export const bootcampRoute = express.Router();
 
@@ -17,7 +17,7 @@ bootcampRoute.use("/:bootcampid/reviews", reviewRoute);
 /**
  * @desc 		Get a bootcamp within a specific distance
  * @route		GET /api/v1/bootcamps/radius/:zipcode/:distance
- * @access	Private
+ * @access		Private
  */
 bootcampRoute
 	.route("/radius/:zipcode/:distance")
@@ -26,7 +26,7 @@ bootcampRoute
 /**
  * @desc 		Upload a bootcamp photo
  * @route		PUT /api/v1/bootcamps/:bootcampid/photo
- * @access	Private
+ * @access		Private
  */
 bootcampRoute
 	.route("/:bootcampid/photo")
@@ -40,13 +40,11 @@ bootcampRoute
  * @desc 		Get all bootcamps and creates a new one
  * @route		GET /api/v1/bootcamps
  * @route		POST /api/v1/bootcamps
- * @access	Public
+ * @access		Public for GET, Private for POST
  */
 bootcampRoute
 	.route("/")
 	.get(
-		requireSignin,
-		hasAuthorization("admin", "publisher"),
 		advancedResults(Bootcamp, "course"),
 		bootcampController.getBootcamps
 	)
@@ -57,7 +55,7 @@ bootcampRoute
  * @route		GET /api/v1/bootcamps/:bootcampid
  * @route		PUT /api/v1/bootcamps/:bootcampid
  * @route		DELETE /api/v1/bootcamps/:bootcampid
- * @access	Private
+ * @access		Private
  */
 bootcampRoute
 	.route("/:bootcampid")

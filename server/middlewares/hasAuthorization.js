@@ -1,4 +1,4 @@
-import { ErrorResponse } from "../utils/errorResponse";
+import { ErrorResponse } from "../utils/errorResponse.js";
 
 export const hasAuthorization = (...roles) => (req, res, next) => {
 	if (!roles.includes(req.user.role)) {
